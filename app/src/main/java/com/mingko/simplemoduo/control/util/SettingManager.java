@@ -31,7 +31,6 @@ public class SettingManager {
 
     private SharedPreferences spf;
     private static SettingManager instance;
-    private Context context;
 
     //第一次进去
     private static final String IS_FIST_IN = "isFistIn";
@@ -63,7 +62,7 @@ public class SettingManager {
      * @param context
      */
     private SettingManager(Context context) {
-        this.context = context;
+        Context context1 = context;
         spf = context.getSharedPreferences(SHARE_PREFERENCES, Context.MODE_PRIVATE);
     }
 
@@ -187,7 +186,7 @@ public class SettingManager {
         return spf.getString(PASSWORD, "");
     }
 
-    private void setToken(String token) {
+    public void setToken(String token) {
         spf.edit().putString(TOKEN, token).commit();
     }
 
@@ -195,7 +194,7 @@ public class SettingManager {
         return spf.getString(TOKEN, "");
     }
 
-    private void setUid(String uid) {
+    public void setUid(String uid) {
         spf.edit().putString(UID, uid).commit();
     }
 
