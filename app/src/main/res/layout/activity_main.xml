@@ -19,14 +19,18 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <io.feeeei.circleseekbar.CircleSeekBar
-            android:id="@+id/id_seekbar"
+        <!--<io.feeeei.circleseekbar.CircleSeekBar-->
+            <!--android:id="@+id/id_seekbar"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:background="@color/colorPrimary"-->
+            <!--app:wheel_max_process="360"-->
+            <!--app:wheel_reached_color="@color/md_yellow_400"-->
+            <!--app:wheel_unreached_color="@color/md_yellow_400" />-->
+
+        <com.mingko.simplemoduo.model.CircleView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/colorPrimary"
-            app:wheel_max_process="360"
-            app:wheel_reached_color="@color/md_yellow_400"
-            app:wheel_unreached_color="@color/md_yellow_400" />
+            android:layout_height="match_parent" />
 
         <Button
             android:id="@+id/id_tv_state"

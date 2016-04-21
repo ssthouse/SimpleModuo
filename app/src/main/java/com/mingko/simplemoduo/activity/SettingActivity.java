@@ -103,6 +103,7 @@ public class SettingActivity extends AppCompatActivity {
             case R.id.id_menu_save_setting:
                 //保存设置
                 saveSetting();
+                finish();
                 break;
         }
         return super.onOptionsItemSelected(item);

@@ -353,10 +353,8 @@ public class XPGController {
 
     /**
      * 刷新当前设备listener
-     *
-     * @param context
      */
-    public void refreshCurrentDeviceListener(Context context) {
+    public void refreshCurrentDeviceListener() {
         if (currentDevice == null) {
             Timber.e("currentDevice 为 null");
             return;
@@ -405,5 +403,6 @@ public class XPGController {
 
     public void setCurrentDevice(XPGWifiDevice currentDevice) {
         this.currentDevice = currentDevice;
+        refreshCurrentDeviceListener();
     }
 }

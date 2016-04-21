@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -28,7 +29,7 @@ import com.xtremeprog.xpgconnect.XPGWifiDevice;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
-import io.feeeei.circleseekbar.CircleSeekBar;
+import timber.log.Timber;
 
 /**
  * 主界面Activity, 控制toolbar和侧边栏
@@ -40,11 +41,14 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.id_tb)
     Toolbar toolbar;
 
-    @Bind(R.id.id_seekbar)
-    CircleSeekBar circleSeekBar;
+//    @Bind(R.id.id_seekbar)
+//    CircleSeekBar circleSeekBar;
 
     @Bind(R.id.id_tv_state)
     Button btnState;
+
+    @Bind(R.id.id_fragment_container)
+    LinearLayout ll;
 
     /**
      * 启动当前activity
@@ -77,27 +81,38 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Simple Moduo");
 
-        circleSeekBar.setOnSeekBarChangeListener(new CircleSeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onChanged(CircleSeekBar circleSeekBar, int maxNum, int currentNum) {
-                //将 0~360 映射到 -150~150
-                if (currentNum > 180) {
-                    currentNum = -(360 - currentNum);
-                }
-                //如果不在-150 ~ 150 改变pointer位置
-                if (currentNum > 150) {
-                    currentNum = 150;
-                    circleSeekBar.setCurProcess(currentNum);
-                }
-                if (currentNum < -150) {
-                    currentNum = -150;
-                    circleSeekBar.setCurProcess(currentNum);
-                    circleSeekBar.invalidate();
-                }
-                //发送数据
-                XPGController.getInstance(MainActivity.this).cWriteXbody(currentNum);
-            }
-        });
+//        circleSeekBar.setCurProcess(40);
+//
+//        circleSeekBar.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                if(event.getAction() == MotionEvent.ACTION_UP){
+//                    int currentNum = circleSeekBar.getCurProcess();
+//                    //将 0~360 映射到 -150~150
+//                    if (currentNum > 180) {
+//                        currentNum = -(360 - currentNum);
+//                    }
+//                    //如果不在-150 ~ 150 改变pointer位置
+//                    if (currentNum > 150) {
+//                        currentNum = 150;
+//                        circleSeekBar.setCurProcess(0);
+//                        circleSeekBar.performClick();
+//                        ll.invalidate();
+//                    }
+//                    if (currentNum < -150) {
+//                        currentNum = -150;
+//                        circleSeekBar.setCurProcess(0);
+//                        circleSeekBar.invalidate();
+//                        circleSeekBar.performClick();
+//                        circleSeekBar.postInvalidate();
+//                        ll.invalidate();
+//                    }
+//                    //发送数据
+//                    XPGController.getInstance(MainActivity.this).cWriteXbody(currentNum);
+//                }
+//                return false;
+//            }
+//        });
 
         btnState.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -209,6 +224,7 @@ public class MainActivity extends AppCompatActivity {
                 if(device.getDid().equals(settingManager.getCurrentDid())){
                     //设置当前设备
                     XPGController.getInstance(this).setCurrentDevice(device);
+                    XPGController.getInstance(this).refreshCurrentDeviceListener();
                     //登陆当前设备
                     device.login(
                             settingManager.getUid(),
@@ -224,6 +240,7 @@ public class MainActivity extends AppCompatActivity {
 
     //设备登陆回调
     public void onEventMainThread(XpgDeviceLoginEvent event) {
+        Timber.e("device login  event in main thread");
         updateUI();
     }
 
