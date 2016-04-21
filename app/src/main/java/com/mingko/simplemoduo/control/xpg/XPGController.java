@@ -2,11 +2,14 @@ package com.mingko.simplemoduo.control.xpg;
 
 import android.content.Context;
 
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mingko.simplemoduo.control.util.SettingManager;
 import com.mingko.simplemoduo.model.DeviceData;
+import com.mingko.simplemoduo.model.cons.xpg.JsonKeys;
 import com.mingko.simplemoduo.model.event.xpg.AuthCodeSendResultEvent;
 import com.mingko.simplemoduo.model.event.xpg.ChangeXpgUserInfoEvent;
 import com.mingko.simplemoduo.model.event.xpg.DeviceBindResultEvent;
@@ -44,7 +47,7 @@ import timber.log.Timber;
 public class XPGController {
 
     //sdk登陆状态
-    private static boolean login = false;
+    private boolean login = false;
 
     //单例
     private static XPGController mInstance;
@@ -54,11 +57,6 @@ public class XPGController {
      * 指令管理器.
      */
     protected CmdCenter mCenter;
-
-    /**
-     * SharePreference处理类.
-     */
-    protected SettingManager settingManager;
 
     //当前机智云设备
     private XPGWifiDevice currentDevice;
@@ -83,11 +81,44 @@ public class XPGController {
     private XPGController(Context context) {
         this.context = context;
         //初始化监听器
-        settingManager = SettingManager.getInstance(context);
         mCenter = CmdCenter.getInstance(context);
         // 每次返回activity都要注册一次sdk监听器，保证sdk状态能正确回调
         mCenter.getXPGWifiSDK().setListener(sdkListener);
     }
+
+    /**
+     * 发送指令.
+     * 抽象出主体逻辑的命令方法
+     *
+     * @param key   the key
+     * @param value the value
+     */
+    public void cWrite(String key, Object value) {
+        //按照一定格式发送数据
+        try {
+            JSONObject jsonSend = new JSONObject();
+            JSONObject jsonParam = new JSONObject();
+            jsonSend.put("cmd", 1);
+            jsonParam.put(key, value);
+            jsonSend.put(JsonKeys.KEY_ACTION, jsonParam);
+            Timber.e("send_data:\t" + jsonSend.toString());
+            currentDevice.write(jsonSend.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //开启设备的video数据点---打开video
+    public void cWriteXbody(int value) {
+        if (currentDevice == null) {
+            Timber.e("当前XpgWifiDevice为空");
+            return;
+        }
+        cWrite(JsonKeys.X_BODY, value);
+    }
+
+
+    //发送xBody变化命令
 
     /**
      * XPGWifiDeviceListener
@@ -360,11 +391,19 @@ public class XPGController {
         return true;
     }
 
-    public static boolean isLogin() {
+    public boolean isLogin() {
         return login;
     }
 
-    public static void setLogin(boolean login) {
-        XPGController.login = login;
+    public void setLogin(boolean login) {
+        this.login = login;
+    }
+
+    public XPGWifiDevice getCurrentDevice() {
+        return currentDevice;
+    }
+
+    public void setCurrentDevice(XPGWifiDevice currentDevice) {
+        this.currentDevice = currentDevice;
     }
 }

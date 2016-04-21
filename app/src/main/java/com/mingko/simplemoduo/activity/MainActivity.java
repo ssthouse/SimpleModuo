@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -15,12 +17,18 @@ import com.mingko.simplemoduo.control.util.QrCodeUtil;
 import com.mingko.simplemoduo.control.util.SettingManager;
 import com.mingko.simplemoduo.control.util.Toast;
 import com.mingko.simplemoduo.control.xpg.CmdCenter;
+import com.mingko.simplemoduo.control.xpg.XPGController;
 import com.mingko.simplemoduo.model.event.scan.ScanDeviceEvent;
+import com.mingko.simplemoduo.model.event.xpg.DeviceBindResultEvent;
+import com.mingko.simplemoduo.model.event.xpg.GetBoundDeviceEvent;
 import com.mingko.simplemoduo.model.event.xpg.XPGLoginResultEvent;
+import com.mingko.simplemoduo.model.event.xpg.XpgDeviceLoginEvent;
+import com.xtremeprog.xpgconnect.XPGWifiDevice;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
+import io.feeeei.circleseekbar.CircleSeekBar;
 
 /**
  * 主界面Activity, 控制toolbar和侧边栏
@@ -31,6 +39,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Bind(R.id.id_tb)
     Toolbar toolbar;
+
+    @Bind(R.id.id_seekbar)
+    CircleSeekBar circleSeekBar;
+
+    @Bind(R.id.id_tv_state)
+    Button btnState;
 
     /**
      * 启动当前activity
@@ -52,8 +66,8 @@ public class MainActivity extends AppCompatActivity {
         //登录
         loginXpg();
 
-        if (SettingManager.getInstance(this).hasLocalModuo()) {
-            Toast.show("未魔哆设备");
+        if (!SettingManager.getInstance(this).hasLocalModuo()) {
+            Toast.show("未绑定魔哆设备");
         }
 
         initView();
@@ -62,6 +76,35 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Simple Moduo");
+
+        circleSeekBar.setOnSeekBarChangeListener(new CircleSeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onChanged(CircleSeekBar circleSeekBar, int maxNum, int currentNum) {
+                //将 0~360 映射到 -150~150
+                if (currentNum > 180) {
+                    currentNum = -(360 - currentNum);
+                }
+                //如果不在-150 ~ 150 改变pointer位置
+                if (currentNum > 150) {
+                    currentNum = 150;
+                    circleSeekBar.setCurProcess(currentNum);
+                }
+                if (currentNum < -150) {
+                    currentNum = -150;
+                    circleSeekBar.setCurProcess(currentNum);
+                    circleSeekBar.invalidate();
+                }
+                //发送数据
+                XPGController.getInstance(MainActivity.this).cWriteXbody(currentNum);
+            }
+        });
+
+        btnState.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateUI();
+            }
+        });
     }
 
     //登录
@@ -75,6 +118,28 @@ public class MainActivity extends AppCompatActivity {
                     SettingManager.getInstance(this).getPassword()
             );
         }
+    }
+
+    //刷新UI
+    private void updateUI() {
+        if (!XPGController.getInstance(this).isLogin()) {
+            btnState.setText("未登录");
+            return;
+        }
+        if (XPGController.getInstance(this).getCurrentDevice() == null) {
+            btnState.setText("未连接魔哆");
+            return;
+        }
+        XPGWifiDevice device = XPGController.getInstance(this).getCurrentDevice();
+        if (!device.isOnline()) {
+            btnState.setText("魔哆不在线");
+            return;
+        }
+        if (!device.isConnected()) {
+            btnState.setText("魔哆未连接");
+            return;
+        }
+        btnState.setText("魔哆连接成功");
     }
 
 
@@ -99,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
 
     //机智云登录回调
     public void onEventMainThread(XPGLoginResultEvent event) {
+        updateUI();
         SettingManager settingManager = SettingManager.getInstance(this);
         if (event.isSuccess()) {
             //将登录数据缓存本地
@@ -112,6 +178,53 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.show("机智云登录失败");
         }
+    }
+
+    //设备绑定回调
+    public void onEventMainThread(DeviceBindResultEvent event) {
+        updateUI();
+        if (event.isSuccess()) {
+            //登录设备
+            SettingManager settingManager = SettingManager.getInstance(this);
+            CmdCenter.getInstance(this).cGetBoundDevices(
+                    settingManager.getUid(),
+                    settingManager.getToken()
+            );
+            Toast.show("设备绑定成功");
+        } else {
+            Toast.show("设备绑定失败");
+        }
+    }
+
+    //获取绑定设备回调
+    public void onEventMainThread(GetBoundDeviceEvent event) {
+        SettingManager settingManager = SettingManager.getInstance(this);
+        if (event.isSuccess()) {
+            //为空直接返回
+            if (event.getXpgDeviceList().size() == 0) {
+                return;
+            }
+            //登陆本地最后一次扫描的设备
+            for(XPGWifiDevice device : event.getXpgDeviceList()){
+                if(device.getDid().equals(settingManager.getCurrentDid())){
+                    //设置当前设备
+                    XPGController.getInstance(this).setCurrentDevice(device);
+                    //登陆当前设备
+                    device.login(
+                            settingManager.getUid(),
+                            settingManager.getToken()
+                    );
+                }
+            }
+        } else {
+            Toast.show("获取绑定设备失败");
+        }
+        updateUI();
+    }
+
+    //设备登陆回调
+    public void onEventMainThread(XpgDeviceLoginEvent event) {
+        updateUI();
     }
 
     //********************** menu控制 ************************************************

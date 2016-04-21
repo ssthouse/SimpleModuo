@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/id_drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".activity.MainActivity">
 
 
@@ -14,6 +16,26 @@
         android:id="@+id/id_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal" />
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <io.feeeei.circleseekbar.CircleSeekBar
+            android:id="@+id/id_seekbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorPrimary"
+            app:wheel_max_process="360"
+            app:wheel_reached_color="@color/md_yellow_400"
+            app:wheel_unreached_color="@color/md_yellow_400" />
+
+        <Button
+            android:id="@+id/id_tv_state"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:text="未登陆"
+            android:textSize="18sp" />
+
+    </LinearLayout>
 </LinearLayout>
 
