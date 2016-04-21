@@ -29,6 +29,7 @@
             <!--app:wheel_unreached_color="@color/md_yellow_400" />-->
 
         <com.mingko.simplemoduo.model.CircleView
+            android:id="@+id/id_circle_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

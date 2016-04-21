@@ -19,6 +19,7 @@ import com.mingko.simplemoduo.control.util.SettingManager;
 import com.mingko.simplemoduo.control.util.Toast;
 import com.mingko.simplemoduo.control.xpg.CmdCenter;
 import com.mingko.simplemoduo.control.xpg.XPGController;
+import com.mingko.simplemoduo.model.CircleView;
 import com.mingko.simplemoduo.model.event.scan.ScanDeviceEvent;
 import com.mingko.simplemoduo.model.event.xpg.DeviceBindResultEvent;
 import com.mingko.simplemoduo.model.event.xpg.GetBoundDeviceEvent;
@@ -43,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
 
 //    @Bind(R.id.id_seekbar)
 //    CircleSeekBar circleSeekBar;
+
+    @Bind(R.id.id_circle_view)
+    CircleView circleView;
 
     @Bind(R.id.id_tv_state)
     Button btnState;
@@ -81,8 +85,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Simple Moduo");
 
-//        circleSeekBar.setCurProcess(40);
-//
 //        circleSeekBar.setOnTouchListener(new View.OnTouchListener() {
 //            @Override
 //            public boolean onTouch(View v, MotionEvent event) {
@@ -118,6 +120,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 updateUI();
+                reConnect();
+                circleView.setCurrentAngle(90);
             }
         });
     }
@@ -131,6 +135,31 @@ public class MainActivity extends AppCompatActivity {
             CmdCenter.getInstance(this).cLogin(
                     SettingManager.getInstance(this).getUserName(),
                     SettingManager.getInstance(this).getPassword()
+            );
+        }
+    }
+
+    //重新连接机智云sdk 和 机智云设备
+    private void reConnect(){
+        SettingManager settingManager = SettingManager.getInstance(this);
+        //sdk未登陆
+        if(!XPGController.getInstance(this).isLogin()){
+            loginXpg();
+            return;
+        }
+        //设备未连接
+        if(XPGController.getInstance(this).getCurrentDevice() == null){
+            CmdCenter.getInstance(this).cGetBoundDevices(
+                    settingManager.getUid(),
+                    settingManager.getToken()
+            );
+            return;
+        }
+        //设备未连接
+        if (!XPGController.getInstance(this).getCurrentDevice().isConnected()) {
+            XPGController.getInstance(this).getCurrentDevice().login(
+                    settingManager.getUid(),
+                    settingManager.getToken()
             );
         }
     }
