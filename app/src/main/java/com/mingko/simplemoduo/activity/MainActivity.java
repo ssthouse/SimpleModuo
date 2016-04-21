@@ -129,8 +129,9 @@ public class MainActivity extends AppCompatActivity {
                 //开启扫描activity
                 QrCodeUtil.startScan(this);
                 break;
+            case R.id.id_menu_setting:
+                SettingActivity.start(this);
         }
-
         return super.onOptionsItemSelected(item);
     }
 

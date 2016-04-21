@@ -45,7 +45,6 @@ public class SettingManager {
      */
     private static final String USER_NAME = "username";
     private static final String PASSWORD = "password";
-    private static final String KEY_GESTURE_LOCK = "gesture_lock";
     // 用户登陆缓存数据
     private static final String TOKEN = "token";
     private static final String UID = "uid";

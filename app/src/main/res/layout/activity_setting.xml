@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp">
+
+        <!--用户名-->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="用户名" />
+
+        <EditText
+            android:id="@+id/id_et_username"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:maxLines="1" />
+
+        <!--密码-->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="密码" />
+
+        <EditText
+            android:id="@+id/id_et_password"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:maxLines="1" />
+
+        <!--设备ID-->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="设备ID" />
+
+        <EditText
+            android:id="@+id/id_et_did"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:maxLines="1" />
+
+
+        <!--设备passcode-->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="设备passcode" />
+
+        <EditText
+            android:id="@+id/id_et_passcode"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:maxLines="1" />
+
+    </LinearLayout>
+
+</LinearLayout>

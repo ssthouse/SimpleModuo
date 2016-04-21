@@ -8,4 +8,9 @@
         android:title="添加魔哆"
         app:showAsAction="never" />
 
+    <item android:id="@+id/id_menu_setting"
+        android:title="设置"
+        app:showAsAction="never"/>
+
+
 </menu>

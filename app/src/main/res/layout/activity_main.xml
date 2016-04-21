@@ -4,7 +4,6 @@
     android:id="@+id/id_drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:context=".activity.MainActivity">
 
 
@@ -15,7 +14,6 @@
         android:id="@+id/id_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
         android:orientation="horizontal" />
 </LinearLayout>
 
