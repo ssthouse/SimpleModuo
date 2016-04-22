@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -42,17 +41,11 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.id_tb)
     Toolbar toolbar;
 
-//    @Bind(R.id.id_seekbar)
-//    CircleSeekBar circleSeekBar;
-
     @Bind(R.id.id_circle_view)
     CircleView circleView;
 
     @Bind(R.id.id_tv_state)
     Button btnState;
-
-    @Bind(R.id.id_fragment_container)
-    LinearLayout ll;
 
     /**
      * 启动当前activity
@@ -83,11 +76,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void initView() {
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Simple Moduo");
+        getSupportActionBar().setTitle("魔哆");
 
-        //CircleView角度bi
+        //CircleView初始化
         circleView.setAngleChangeListener(new CircleView.AngleChangeListener() {
-            public void onAngleChange(int newAngle) {
+             public void onAngleChange(int newAngle) {
                 int currentNum = circleView.getCurrentAngle();
                 //将 0~360 映射到 -150~150
                 if (currentNum > 180) {
@@ -98,12 +91,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //状态按钮
         btnState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 updateUI();
                 reConnect();
-                circleView.setCurrentAngle(90);
             }
         });
     }

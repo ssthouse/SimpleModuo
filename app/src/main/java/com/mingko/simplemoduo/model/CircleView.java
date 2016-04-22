@@ -126,35 +126,36 @@ public class CircleView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_UP) {
+            int newAngle;
             float touchX = event.getX();
             float touchY = event.getY();
             //计算出当前角度(0-360)
             //以圆形为原点的坐标
             float indexX = touchX - dimen / 2;
             float indexY = dimen / 2 - touchY;
-            int angle = (int) (Math.atan(indexY / indexX) * 180 / Math.PI + 90);
-//            Timber.e("X: " + indexX + "    Y:" + indexY);
+            //Timber.e("X: " + indexX + "    Y:" + indexY);
             if (indexX >= 0 && indexY >= 0) {
                 //第一象限
-                setCurrentAngle((int) (90 - Math.atan(Math.abs(indexY / indexX)) * 180 / Math.PI));
+                newAngle = (int) (90 - Math.atan(Math.abs(indexY / indexX)) * 180 / Math.PI);
             } else if (indexX >= 0 && indexY <= 0) {
                 //第四象限
-                setCurrentAngle((int) (90 + Math.atan(Math.abs(indexY / indexX)) * 180 / Math.PI));
+                newAngle = (int) (90 + Math.atan(Math.abs(indexY / indexX)) * 180 / Math.PI);
             } else if (indexX <= 0 && indexY >= 0) {
                 //第二象限
-                setCurrentAngle((int) (270 + Math.atan(Math.abs(indexY / indexX)) * 180 / Math.PI));
+                newAngle = (int) (270 + Math.atan(Math.abs(indexY / indexX)) * 180 / Math.PI);
             } else {
                 //第三象限
-                setCurrentAngle((int) (270 - Math.atan(Math.abs(indexY / indexX)) * 180 / Math.PI));
+                newAngle = (int) (270 - Math.atan(Math.abs(indexY / indexX)) * 180 / Math.PI);
             }
-//            Timber.e("angle: " + currentAngle);
+            //Timber.e("angle: " + currentAngle);
             //如果点击的位置不对---需要手动修正
-            if (currentAngle > 150 && currentAngle < 180) {
-                setCurrentAngle(150);
+            if (newAngle > 150 && newAngle < 180) {
+                newAngle = 150;
             }
-            if (currentAngle > 180 && currentAngle < 210) {
-                setCurrentAngle(210);
+            if (newAngle > 180 && newAngle < 210) {
+                newAngle = 210;
             }
+            setCurrentAngle(newAngle);
         }
         return true;
     }

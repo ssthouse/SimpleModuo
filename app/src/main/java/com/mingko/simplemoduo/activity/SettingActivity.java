@@ -84,6 +84,8 @@ public class SettingActivity extends AppCompatActivity {
         settingManager.setPassword(password);
         settingManager.setCurrentDid(did);
         settingManager.setPasscode(passcode);
+        //toast提示保存成功
+        Toast.show("保存成功");
     }
 
     //******************* menu ********************************

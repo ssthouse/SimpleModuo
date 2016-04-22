@@ -37,12 +37,11 @@
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
 
-
     <application
         android:name="com.mingko.simplemoduo.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="魔哆"
+        android:label="魔哆Lite"
         tools:replace="android:icon, android:label"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
