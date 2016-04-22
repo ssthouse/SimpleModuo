@@ -32,10 +32,12 @@ public class CircleView extends View {
     //当前方向(0 - 360°)
     private int currentAngle;
 
-    interface AngleChangeListener {
+    //*******************************角度变化监听器**************
+    public interface AngleChangeListener {
         void onAngleChange(int newAngle);
     }
 
+    private AngleChangeListener angleChangeListener;
 
     //********************构造方法*****************************************
     public CircleView(Context context) {
@@ -102,7 +104,7 @@ public class CircleView extends View {
         mPaint.setColor(Color.WHITE);
         mPaint.setStrokeWidth((outerRadius - innerRadius) / 2);
         //找到原点
-        int pointerX = dimen/2  - (int) (Math.cos((currentAngle + 90) * Math.PI / 180) * ((innerRadius + outerRadius) / 2));
+        int pointerX = dimen / 2 - (int) (Math.cos((currentAngle + 90) * Math.PI / 180) * ((innerRadius + outerRadius) / 2));
         int pointerY = dimen / 2 - (int) (Math.sin((currentAngle + 90) * Math.PI / 180) * ((innerRadius + outerRadius) / 2));
         canvas.drawCircle(pointerX, pointerY, (outerRadius - innerRadius) / 2, mPaint);
         super.onDraw(canvas);
@@ -134,27 +136,47 @@ public class CircleView extends View {
 //            Timber.e("X: " + indexX + "    Y:" + indexY);
             if (indexX >= 0 && indexY >= 0) {
                 //第一象限
-                currentAngle = (int) (90 - Math.atan(Math.abs(indexY / indexX)) * 180 / Math.PI);
+                setCurrentAngle((int) (90 - Math.atan(Math.abs(indexY / indexX)) * 180 / Math.PI));
             } else if (indexX >= 0 && indexY <= 0) {
                 //第四象限
-                currentAngle = (int) (90 + Math.atan(Math.abs(indexY / indexX)) * 180 / Math.PI);
+                setCurrentAngle((int) (90 + Math.atan(Math.abs(indexY / indexX)) * 180 / Math.PI));
             } else if (indexX <= 0 && indexY >= 0) {
                 //第二象限
-                currentAngle = (int) (270 + Math.atan(Math.abs(indexY / indexX)) * 180 / Math.PI);
+                setCurrentAngle((int) (270 + Math.atan(Math.abs(indexY / indexX)) * 180 / Math.PI));
             } else {
                 //第三象限
-                currentAngle = (int) (270 - Math.atan(Math.abs(indexY / indexX)) * 180 / Math.PI);
+                setCurrentAngle((int) (270 - Math.atan(Math.abs(indexY / indexX)) * 180 / Math.PI));
             }
 //            Timber.e("angle: " + currentAngle);
-            invalidate();
+            //如果点击的位置不对---需要手动修正
+            if (currentAngle > 150 && currentAngle < 180) {
+                setCurrentAngle(150);
+            }
+            if (currentAngle > 180 && currentAngle < 210) {
+                setCurrentAngle(210);
+            }
         }
         return true;
     }
 
-
     //更新当前angle
     public void setCurrentAngle(int newAngle) {
+        if (currentAngle == newAngle) {
+            return;
+        }
         currentAngle = newAngle;
+        //像监听器发送消息
+        if (angleChangeListener != null) {
+            angleChangeListener.onAngleChange(currentAngle);
+        }
         invalidate();
+    }
+
+    public void setAngleChangeListener(AngleChangeListener listener) {
+        this.angleChangeListener = listener;
+    }
+
+    public int getCurrentAngle() {
+        return currentAngle;
     }
 }

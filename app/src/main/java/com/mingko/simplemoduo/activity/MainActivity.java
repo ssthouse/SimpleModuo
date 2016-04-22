@@ -85,36 +85,18 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Simple Moduo");
 
-//        circleSeekBar.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                if(event.getAction() == MotionEvent.ACTION_UP){
-//                    int currentNum = circleSeekBar.getCurProcess();
-//                    //将 0~360 映射到 -150~150
-//                    if (currentNum > 180) {
-//                        currentNum = -(360 - currentNum);
-//                    }
-//                    //如果不在-150 ~ 150 改变pointer位置
-//                    if (currentNum > 150) {
-//                        currentNum = 150;
-//                        circleSeekBar.setCurProcess(0);
-//                        circleSeekBar.performClick();
-//                        ll.invalidate();
-//                    }
-//                    if (currentNum < -150) {
-//                        currentNum = -150;
-//                        circleSeekBar.setCurProcess(0);
-//                        circleSeekBar.invalidate();
-//                        circleSeekBar.performClick();
-//                        circleSeekBar.postInvalidate();
-//                        ll.invalidate();
-//                    }
-//                    //发送数据
-//                    XPGController.getInstance(MainActivity.this).cWriteXbody(currentNum);
-//                }
-//                return false;
-//            }
-//        });
+        //CircleView角度bi
+        circleView.setAngleChangeListener(new CircleView.AngleChangeListener() {
+            public void onAngleChange(int newAngle) {
+                int currentNum = circleView.getCurrentAngle();
+                //将 0~360 映射到 -150~150
+                if (currentNum > 180) {
+                    currentNum = -(360 - currentNum);
+                }
+                //发送数据
+                XPGController.getInstance(MainActivity.this).cWriteXbody(currentNum);
+            }
+        });
 
         btnState.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,15 +122,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //重新连接机智云sdk 和 机智云设备
-    private void reConnect(){
+    private void reConnect() {
         SettingManager settingManager = SettingManager.getInstance(this);
         //sdk未登陆
-        if(!XPGController.getInstance(this).isLogin()){
+        if (!XPGController.getInstance(this).isLogin()) {
             loginXpg();
             return;
         }
         //设备未连接
-        if(XPGController.getInstance(this).getCurrentDevice() == null){
+        if (XPGController.getInstance(this).getCurrentDevice() == null) {
             CmdCenter.getInstance(this).cGetBoundDevices(
                     settingManager.getUid(),
                     settingManager.getToken()
@@ -249,8 +231,8 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             //登陆本地最后一次扫描的设备
-            for(XPGWifiDevice device : event.getXpgDeviceList()){
-                if(device.getDid().equals(settingManager.getCurrentDid())){
+            for (XPGWifiDevice device : event.getXpgDeviceList()) {
+                if (device.getDid().equals(settingManager.getCurrentDid())) {
                     //设置当前设备
                     XPGController.getInstance(this).setCurrentDevice(device);
                     XPGController.getInstance(this).refreshCurrentDeviceListener();
