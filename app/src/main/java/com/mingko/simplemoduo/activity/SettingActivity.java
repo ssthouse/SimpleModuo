@@ -14,6 +14,7 @@ import android.widget.EditText;
 import com.mingko.simplemoduo.R;
 import com.mingko.simplemoduo.control.util.SettingManager;
 import com.mingko.simplemoduo.control.util.Toast;
+import com.mingko.simplemoduo.control.xpg.CmdCenter;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -80,10 +81,18 @@ public class SettingActivity extends AppCompatActivity {
             Toast.show("did和passcode不可为空");
             return;
         }
-        settingManager.setUserName(username);
-        settingManager.setPassword(password);
+        //settingManager.setUserName(username);
+        //settingManager.setPassword(password);
         settingManager.setCurrentDid(did);
         settingManager.setPasscode(passcode);
+
+        //修改绑定设备   进行绑定
+        CmdCenter.getInstance(this).cBindDevice(settingManager.getUid(),
+                settingManager.getToken(),
+                settingManager.getCurrentDid(),
+                settingManager.getPasscode(),
+                "我的魔哆");
+
         //toast提示保存成功
         Toast.show("保存成功");
     }
