@@ -108,7 +108,7 @@ public class XPGController {
         }
     }
 
-    //开启设备的video数据点---打开video
+    //写xbody数据
     public void cWriteXbody(int value) {
         if (currentDevice == null) {
             Timber.e("当前XpgWifiDevice为空");
@@ -117,6 +117,14 @@ public class XPGController {
         cWrite(JsonKeys.X_BODY, value);
     }
 
+
+    public void cWriteXhead(int value){
+        if (currentDevice == null) {
+            Timber.e("当前XpgWifiDevice为空");
+            return;
+        }
+        cWrite(JsonKeys.X_HEAD, value);
+    }
 
     //发送xBody变化命令
 

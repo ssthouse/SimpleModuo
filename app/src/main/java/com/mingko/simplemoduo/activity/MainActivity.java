@@ -13,6 +13,7 @@ import android.widget.Button;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.mingko.simplemoduo.R;
+import com.mingko.simplemoduo.control.util.MD5Util;
 import com.mingko.simplemoduo.control.util.QrCodeUtil;
 import com.mingko.simplemoduo.control.util.SettingManager;
 import com.mingko.simplemoduo.control.util.Toast;
@@ -87,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                     currentNum = -(360 - currentNum);
                 }
                 //发送数据
-                XPGController.getInstance(MainActivity.this).cWriteXbody(currentNum);
+                XPGController.getInstance(MainActivity.this).cWriteXhead(currentNum);
             }
         });
 
@@ -109,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             CmdCenter.getInstance(this).cLogin(
                     SettingManager.getInstance(this).getUserName(),
-                    SettingManager.getInstance(this).getPassword()
+                    MD5Util.getMdStr(SettingManager.getInstance(this).getPassword())
             );
         }
     }
